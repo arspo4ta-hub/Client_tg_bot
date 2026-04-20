@@ -1,6 +1,8 @@
 import logging
 from aiogram import Router
-from aiogram.filters import Command, ChatType
+from aiogram import F
+from aiogram.enums import ChatType
+from aiogram.filters import Command
 from aiogram.types import Message
 
 from config import config
@@ -16,7 +18,7 @@ def _is_owner(message: Message) -> bool:
     return bool(message.from_user and message.from_user.id == config.owner_id)
 
 
-@router.message(Command("report"), ChatType("private"))
+@router.message(Command("report"), F.chat.type == ChatType.PRIVATE)
 async def cmd_report(message: Message) -> None:
     if not _is_owner(message):
         return
@@ -30,7 +32,7 @@ async def cmd_report(message: Message) -> None:
         await message.answer("Ошибка при генерации отчёта. Проверьте логи.")
 
 
-@router.message(Command("chats"), ChatType("private"))
+@router.message(Command("chats"), F.chat.type == ChatType.PRIVATE)
 async def cmd_chats(message: Message) -> None:
     if not _is_owner(message):
         return
@@ -46,7 +48,7 @@ async def cmd_chats(message: Message) -> None:
     await message.answer("\n".join(lines), parse_mode="MarkdownV2")
 
 
-@router.message(Command("stats"), ChatType("private"))
+@router.message(Command("stats"), F.chat.type == ChatType.PRIVATE)
 async def cmd_stats(message: Message) -> None:
     if not _is_owner(message):
         return

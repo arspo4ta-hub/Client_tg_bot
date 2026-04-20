@@ -1,8 +1,10 @@
 import asyncio
 import logging
+import ssl
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.enums import ParseMode
 
 from config import config
@@ -20,8 +22,13 @@ async def main() -> None:
 
     await init_db(config.database_path)
 
+    # Disable SSL verification for environments with self-signed proxy certificates
+    session = AiohttpSession()
+    session._connector_init["ssl"] = False
+
     bot = Bot(
         token=config.bot_token,
+        session=session,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML),
     )
     dp = Dispatcher()

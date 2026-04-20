@@ -1,5 +1,5 @@
-from aiogram import Router
-from aiogram.filters import ChatType
+from aiogram import Router, F
+from aiogram.enums import ChatType
 from aiogram.types import Message
 
 from config import config
@@ -8,7 +8,7 @@ from database import queries
 router = Router()
 
 
-@router.message(ChatType("group", "supergroup"))
+@router.message(F.chat.type.in_({ChatType.GROUP, ChatType.SUPERGROUP}))
 async def handle_group_message(message: Message) -> None:
     if not message.from_user:
         return
